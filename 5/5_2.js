@@ -5,7 +5,8 @@ const extractData = function (text) {
 	rawData.shift();
 	const processedData = [];
 	for (const line of rawData) {
-		processedData.push(line.split(" "));
+		const parts = line.split(" ");
+		processedData.push(parts.map(a => Number(a)));
 	}
 	return processedData;
 };
@@ -13,10 +14,10 @@ const extractData = function (text) {
 const reverseMap = function (value, map) {
 	let result;
 	for (const line of map) {
-		const destinationRangeStart = Number(line[0]);
-		const sourceRangeStart = Number(line[1]);
-		const rangeLength = Number(line[2]);
-		const number = Number(value);
+		const destinationRangeStart = line[0];
+		const sourceRangeStart = line[1];
+		const rangeLength = line[2];
+		const number = value;
 		if (number >= destinationRangeStart && number < destinationRangeStart + rangeLength) {
 			const diff = number - destinationRangeStart;
 			result = sourceRangeStart + diff;
@@ -39,7 +40,7 @@ const seedExists = function (seed, seeds) {
 
 const main = function (input) {
 	const groups = input.toString("UTF-8").split("\n\n");
-	const seeds = groups[0].split("seeds: ")[1].split(" ");
+	const seeds = groups[0].split("seeds: ")[1].split(" ").map(a => Number(a));
 	const seedToSoil = extractData(groups[1]);
 	const soilToFertilizer = extractData(groups[2]);
 	const fertilizerToWater = extractData(groups[3]);
@@ -47,7 +48,6 @@ const main = function (input) {
 	const lightToTemperature = extractData(groups[5]);
 	const temperatureToHumidity = extractData(groups[6]);
 	const humidityToLocation = extractData(groups[7]);
-
 	let lowestLocation = 0;
 	while (true) {
 		let humidity = reverseMap(lowestLocation, humidityToLocation) || lowestLocation;
